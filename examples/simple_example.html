@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>简单的例子</title>
+</head>
+<body>
+<p>First name: <strong data-bind="text: firstName"></strong></p>
+<p>Last name: <strong data-bind="text: lastName"></strong></p>
+<script src="../bower_components/knockout/dist/knockout.js"></script>
+<script>
+	var myName = {
+		firstName: 'Rita',
+		lastName: 'Song'
+	}
+
+	ko.applyBindings(myName);
+</script>
+</body>
+</html>
