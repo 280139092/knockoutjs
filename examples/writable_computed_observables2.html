@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>可写的ComputedObservables：全选/全不选</title>
+</head>
+<body>
+<p>
+    <input type="checkbox" data-bind="checked: selectedAllProduce" title="Select all/none"/> Produce
+</p>
+<hr />
+<div data-bind="foreach: produce">
+	<p>
+	    <label>
+	        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.selectedProduce"/>
+	        <span data-bind="text: $data"></span>
+	    </label>
+	</p>
+</div>
+<script src="../bower_components/knockout/dist/knockout.js"></script>
+<script>
+	function MyViewModel() {
+	    this.produce = [ 'Apple', 'Banana', 'Celery', 'Corn', 'Orange', 'Spinach' ];
+	    this.selectedProduce = ko.observableArray([ 'Corn', 'Orange' ]);
+	    this.selectedAllProduce = ko.pureComputed({
+	        read: function () {
+	            // 比较长度是一个又快又准确的方法来判断主数组的某些选项是否被添加到已选择的数组
+	            return this.selectedProduce().length === this.produce.length;
+	        },
+	        write: function (value) {
+	            this.selectedProduce(value ? this.produce.slice(0) : []);
+	        },
+	        owner: this
+	    });
+	}
+ 
+	ko.applyBindings(new MyViewModel());
+</script>
+</body>
+</html>

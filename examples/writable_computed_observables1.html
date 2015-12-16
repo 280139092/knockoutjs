@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>可写的ComputedObservables：分解用户输入</title>
+</head>
+<body>
+<p>First name: <span data-bind="text: firstName"></span></p>
+<p>Last name: <span data-bind="text: lastName"></span></p>
+<hr />
+<p>Hello, <input data-bind="textInput: fullName"/></p>
+<script src="../bower_components/knockout/dist/knockout.js"></script>
+<script>
+	function MyViewModel() {
+	    this.firstName = ko.observable('Rita');
+	    this.lastName = ko.observable('Song');
+	 
+	    this.fullName = ko.pureComputed({
+	        read: function () {
+	            return this.firstName() + " " + this.lastName();
+	        },
+	        write: function (value) {
+	            var lastSpacePos = value.lastIndexOf(" ");
+	            if (lastSpacePos > 0) { // 忽略没有空格的字符
+	                this.firstName(value.substring(0, lastSpacePos)); // 更新firstName
+	                this.lastName(value.substring(lastSpacePos + 1)); // 更新lastName
+	            }
+	        },
+	        owner: this
+	    });
+	}
+ 
+	ko.applyBindings(new MyViewModel());
+</script>
+</body>
+</html>

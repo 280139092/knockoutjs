@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>可写的ComputedObservables：价格转换器</title>
+</head>
+<body>
+<p>Enter bid price: <input data-bind="textInput: formattedPrice"/></p>
+<p>(Raw value: <span data-bind="text: price"></span>)</p>
+<script src="../bower_components/knockout/dist/knockout.js"></script>
+<script>
+	function MyViewModel() {
+	    this.price = ko.observable(25.99);
+	 
+	    this.formattedPrice = ko.pureComputed({
+	        read: function () {
+	            return '$' + this.price().toFixed(2);
+	        },
+	        write: function (value) {
+	        	// 剔除不想要的字符、转换成浮点型，然后把原始数据写入price
+	            value = parseFloat(value.replace(/[^\.\d]/g, ""));
+	            this.price(isNaN(value) ? 0 : value); // 写入存储
+	        },
+	        owner: this
+	    });
+	}
+ 
+	ko.applyBindings(new MyViewModel());
+</script>
+</body>
+</html>
